@@ -1,0 +1,17 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build
+    image: debian:stable
+    commands:
+      - apt update -qq 2>/dev/null
+      - |
+        apt install -qq -y
+          git python3-virtualenv python3-venv python3-pip python3-dev
+          python3-wheel
+          2>/dev/null
+      - virtualenv venv-drone
+      - venv-drone/bin/pip install -q esphome
+      - venv-drone/bin/esphome compile lifire.yaml

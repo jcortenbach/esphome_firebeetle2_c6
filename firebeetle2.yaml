@@ -9,6 +9,10 @@ external_components:
   - source:
       type: local
       path: components
+  # Remove post 2024.04?
+  - source: github://luar123/esphome@fix_logger
+    components:
+      - logger
 
 esp32:
   board: esp32-c6-devkitm-1
