@@ -1,0 +1,5 @@
+venv/
+secrets.yaml
+.esphome/
+.vscode/
+__pycache__/

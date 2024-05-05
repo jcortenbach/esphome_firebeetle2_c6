@@ -1,0 +1,9 @@
+﻿substitutions:
+  device_name: LiFire
+  device_id: lifire
+  project_name: juju.lifire
+  project_version: "0.1"
+  default_update_interval: 30s
+  sleep_duration: 120s
+
+<<: !include firebeetle2.yaml
