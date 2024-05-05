@@ -5,7 +5,17 @@ name: default
 steps:
   - name: build
     image: debian:stable
+    environment:
+      WIFI_SSID:
+        from_secret: wifi_ssid
+      WIFI_PASSWORD:
+        from_secret: wifi_password
+      API_KEY:
+        from_secret: api_key
     commands:
+      - echo wifi_ssid:\ \"$WIFI_SSID\" > secrets.yaml
+      - echo wifi_password:\ \"$WIFI_PASSWORD\" >> secrets.yaml
+      - echo api_key:\ \"$API_KEY\" >> secrets.yaml
       - apt update -qq > /dev/null
       - |
         apt install -qq -y \
