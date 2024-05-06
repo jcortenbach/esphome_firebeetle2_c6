@@ -10,7 +10,7 @@ external_components:
       type: local
       path: components
   # Remove post 2024.04?
-  - source: github://luar123/esphome@fix_logger
+  - source: github://esphome/esphome@dev
     components:
       - logger
 
@@ -33,20 +33,12 @@ logger:
 api:
   encryption:
     key: !secret api_key
-  on_client_connected:
-  # Update the important sensors.
-  - component.update: uptime0
-  - component.update: battery_voltage
-  # Sleep to ensure the updates go through.
-  - delay: 1s
-  - deep_sleep.enter:
-      id: deep_sleep0
-      # Sleep until the start of the next cycle. Note that `sleep_duration` is in ms.
-      sleep_duration: !lambda |-
-        auto now = id(homeassistant_time).now().timestamp;
-        return (std::ceil(now/300.0)*300 - now) * 1e3;
 
 ota:
+
+esp32_improv:
+  authorizer: boot_button
+  wifi_timeout: 30s
 
 wifi:
   ssid: !secret wifi_ssid
@@ -58,7 +50,7 @@ wifi:
 deep_sleep:
   id: deep_sleep0
   # Ensure the device sleeps even if Wifi or Home Assistant is unavailable.
-  run_duration: 60s
+  run_duration: 120s
   sleep_duration: ${sleep_duration}
 
 switch:
@@ -70,6 +62,14 @@ light:
     name: "LED"
     id: led
     pin: GPIO15
+
+binary_sensor:
+  - platform: gpio
+    name: "Boot"
+    id: boot_button
+    pin:
+      number: GPIO9
+      inverted: true
 
 sensor:
   - platform: uptime
