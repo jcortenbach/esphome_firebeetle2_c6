@@ -15,11 +15,15 @@ packages:
       - component.update: battery_voltage
       # Sleep to ensure the updates go through.
       - delay: 1s
-      - deep_sleep.enter:
-          id: deep_sleep0
-          # Sleep until the start of the next cycle. Note that `sleep_duration` is in ms.
-          sleep_duration: !lambda |-
-            auto now = id(homeassistant_time).now().timestamp;
-            return (std::ceil(now/300.0)*300 - now) * 1e3;
+      - if:
+          condition:
+            binary_sensor.is_off: ota_mode
+          then:
+            - deep_sleep.enter:
+                id: deep_sleep0
+                # Sleep until the start of the next cycle. Note that `sleep_duration` is in ms.
+                sleep_duration: !lambda |-
+                  auto now = id(homeassistant_time).now().timestamp;
+                  return (std::ceil(now/300.0)*300 - now) * 1e3;
 
 <<: !include firebeetle2.yaml

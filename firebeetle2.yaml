@@ -36,10 +36,6 @@ api:
 
 ota:
 
-esp32_improv:
-  authorizer: boot_button
-  wifi_timeout: 30s
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -70,6 +66,20 @@ binary_sensor:
     pin:
       number: GPIO9
       inverted: true
+
+  - platform: homeassistant
+    id: ota_mode
+    entity_id: input_boolean.${device_id}_ota_mode
+    publish_initial_state: true
+    on_state:
+      then:
+        if:
+          condition:
+            lambda: return x;
+          then:
+            - deep_sleep.prevent: deep_sleep0
+          else:
+            - deep_sleep.allow: deep_sleep0
 
 sensor:
   - platform: uptime
@@ -113,6 +123,11 @@ sensor:
     filters:
       - calibrate_linear:
           - 3.45 -> 0.0
+          - 3.69 -> 10.0
+          - 3.73 -> 20.0
+          - 3.80 -> 40.0
+          - 3.87 -> 60.0
+          - 4.02 -> 80.0
           - 4.20 -> 100.0
       - clamp:
           min_value: 0
